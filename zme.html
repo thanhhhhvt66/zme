@@ -12,7 +12,6 @@
     font-family: Comic Sans MS, sans-serif;
     color: white; text-align: center;
   }
-  /* Form 1 */
   #startScreen {
     position: absolute;
     top: 0; left: 0;
@@ -35,8 +34,6 @@
     margin-top: 20px;
   }
   @keyframes spin { 0% {transform: rotate(0deg);} 100% {transform: rotate(360deg);} }
-
-  /* Form 2 */
   #screen {
     display: none;
     background: transparent;
@@ -52,14 +49,12 @@
   <source src="nhac.mp3" type="audio/mpeg">
 </audio>
 
-<!-- Form 1 -->
 <div id="startScreen">
   <div id="heart">❤</div>
   <div id="loader"></div>
-  <p>Ấn giữ trái tim để bắt đầu</p>
+  <p style ="color: red; font-family: Comic Sans MS; font-size: large;">nhan giu trai tim</p>
 </div>
 
-<!-- Form 2 -->
 <canvas id="screen"></canvas>
 
 <script>
@@ -78,15 +73,12 @@ resizeCanvas();
 window.addEventListener("resize", resizeCanvas);
 
 let pressTimer;
-
-// Giữ trái tim 1 giây → phát nhạc ngay
 heart.addEventListener("mousedown", () => {
   audio.play();
   pressTimer = setTimeout(startLoading, 1000);
 });
 heart.addEventListener("mouseup", () => clearTimeout(pressTimer));
 heart.addEventListener("mouseleave", () => clearTimeout(pressTimer));
-
 heart.addEventListener("touchstart", () => {
   audio.play();
   pressTimer = setTimeout(startLoading, 1000);
@@ -107,24 +99,24 @@ function startLoading() {
   }, 1000);
 }
 
-// ---------------- Form 2 ----------------
 let WIDTH = canvas.width;
 let HEIGHT = canvas.height;
 let fallingItems = [];
 let lastSpawn = 0;
 let stars = [];
 
+// Ít chữ hơn
 const messages = [
-  "Honey bunch, you are my everything!",
-  "You make my heart smile",
-  "I love you so much!",
-  "You're amazing",
-  "You are my universe",
-  "Thank you for being my sunshine",
-  "There is no other",
-  "Our Anniversary",
-  "25/08/2004"
+  "08-12-02",
+  "vui ve len nha ",
+  "an uong day du",
+  "giu gin suc khoe",
+  "khong duoc tieu cuc nua",
+  "nho uong thuoc day du",
+  "ngu som, tam som",
+  "di dung can than"
 ];
+// Ít ảnh hơn
 const imgSources = ["anh1.jpg","anh2.jpg","anh3.jpg","anh4.jpg"];
 const images = [];
 imgSources.forEach(src => {
@@ -134,14 +126,14 @@ imgSources.forEach(src => {
 });
 
 function spawnItem() {
-  if (Math.random() < 0.7) {
+  if (Math.random() < 0.6) {
     const msg = messages[Math.floor(Math.random() * messages.length)];
     fallingItems.push({
       type: "text",
       text: msg,
       x: Math.random() * WIDTH,
       y: -50,
-      speed: 1 + Math.random() * 1.5,
+      speed: 2 + Math.random() * 2, // tốc độ nhanh hơn
       color: "pink"
     });
   } else {
@@ -151,21 +143,20 @@ function spawnItem() {
       img: img,
       x: Math.random() * WIDTH,
       y: -100,
-      speed: 1 + Math.random() * 1.5,
-      size: 100 + Math.random() * 50
+      speed: 2 + Math.random() * 2, // tốc độ nhanh hơn
+      size: 60 + Math.random() * 30 // ảnh nhỏ hơn
     });
   }
 }
 
-// Tạo sao nền nhiều hơn và có chiều sâu + nhòe
 function spawnStars() {
-  for (let i=0; i<600; i++) { // nhiều hơn
+  for (let i=0; i<200; i++) { // ít sao hơn
     stars.push({
       x: Math.random()*WIDTH,
       y: Math.random()*HEIGHT,
       size: Math.random()*2+1,
-      alpha: 0.2 + Math.random()*0.3, // sáng nhẹ
-      depth: Math.random()*2+0.5 // tạo chiều sâu
+      alpha: 0.2 + Math.random()*0.3,
+      depth: Math.random()*2+0.5
     });
   }
 }
@@ -175,27 +166,23 @@ function loop() {
   HEIGHT = canvas.height;
   ctx.clearRect(0,0,WIDTH,HEIGHT);
 
-  // Vẽ sao nền
   stars.forEach(s => {
     ctx.fillStyle = "rgba(255,192,203,"+s.alpha+")";
     ctx.shadowColor = "pink";
-    ctx.shadowBlur = 25*s.depth; // nhòe mạnh hơn theo chiều sâu
+    ctx.shadowBlur = 25*s.depth;
     ctx.beginPath();
     ctx.arc(s.x, s.y, s.size*s.depth, 0, Math.PI*2);
     ctx.fill();
-    // di chuyển chậm để tạo chiều sâu
     s.y += 0.02*s.depth;
     if (s.y > HEIGHT) s.y = 0;
   });
 
-  // spawn chữ/ảnh
-  if (Date.now() - lastSpawn > 300) {
-    for (let i = 0; i < 4; i++) spawnItem();
+  if (Date.now() - lastSpawn > 400) { // spawn chậm hơn
+    for (let i = 0; i < 2; i++) spawnItem(); // ít item hơn
     lastSpawn = Date.now();
   }
 
-  // Vẽ chữ/ảnh rơi
-  ctx.font = "28px Comic Sans MS";
+  ctx.font = "24px Comic Sans MS";
   ctx.textAlign = "center";
   fallingItems.forEach(item => {
     if (item.type === "text") {
@@ -217,7 +204,7 @@ function loop() {
 
 function startForm2() {
   spawnStars();
-  for (let i = 0; i < 10; i++) spawnItem();
+  for (let i = 0; i < 5; i++) spawnItem();
   loop();
 }
 </script>
